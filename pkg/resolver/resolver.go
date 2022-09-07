@@ -110,7 +110,7 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 		hasIncludes := len(dep.Includes) > 0
 
 		protoRootDir := gitrepo.ProtoRootDir()
-		filepath.Walk(protoRootDir, func(path string, info os.FileInfo, err error) error {
+		err = filepath.Walk(protoRootDir, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
@@ -132,6 +132,9 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 			return nil
 		})
 
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 		for _, s := range sources {
 			outpath := filepath.Join(outdir, dep.Path, s.relativeDest)
 
