@@ -46,7 +46,7 @@ func (r *github) Open() (*OpenedRepository, error) {
 	}
 
 	revision := r.dep.Revision
-	reponame := r.dep.Target
+	reponame := r.dep.Repository()
 	repopath := filepath.Join(r.protodepDir, reponame)
 
 	auth, err := r.authProvider.AuthMethod()
@@ -84,7 +84,7 @@ func (r *github) Open() (*OpenedRepository, error) {
 		// IDEA: Is it better to register both ssh and HTTP?
 		rep, err = git.PlainClone(repopath, false, &git.CloneOptions{
 			Auth: auth,
-			URL:  r.authProvider.GetRepositoryURL(r.dep.Target),
+			URL:  r.authProvider.GetRepositoryURL(r.dep.Repository()),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("clone repository: %w", err)

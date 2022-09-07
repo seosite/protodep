@@ -2,7 +2,15 @@ proto_outdir = "./proto"
 
 # target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/order/tree/master/pkg/proto"
 [[dependencies]]
-  target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/base/protoc"
+  target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/base/protoc/pkg/proto"
+  subgroup = "backend/base"
   branch = "master"
   protocol = "https"
-  path = "test"
+  path = "t2"
+
+[[dependencies]]
+  target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/base/protoc/pkg/proto"
+  subgroup = "backend/base"
+  branch = "master"
+  protocol = "https"
+  path = "t1"
