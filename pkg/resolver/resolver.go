@@ -80,7 +80,11 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 	}
 
 	for _, dep := range protodep.Dependencies {
-		var authProvider auth.AuthProvider
+		var (
+			protoRootDir string
+			authProvider auth.AuthProvider
+			repo         *repository.OpenedRepository
+		)
 
 		if s.conf.UseHttps {
 			authProvider = s.httpsProvider
@@ -95,11 +99,17 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 			}
 		}
 
-		gitrepo := repository.NewGit(protodepDir, dep, authProvider)
+		if dep.UseLocal {
+			protoRootDir = dep.Target
+		} else {
+			gitrepo := repository.NewGit(protodepDir, dep, authProvider)
 
-		repo, err := gitrepo.Open()
-		if err != nil {
-			return err
+			protoRootDir = gitrepo.ProtoRootDir()
+
+			repo, err = gitrepo.Open()
+			if err != nil {
+				return err
+			}
 		}
 
 		sources := make([]protoResource, 0)
@@ -109,11 +119,44 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 
 		hasIncludes := len(dep.Includes) > 0
 
-		protoRootDir := gitrepo.ProtoRootDir()
+		fmt.Println("protoRootDir...", protoRootDir)
 		err = filepath.Walk(protoRootDir, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
+
+			if dep.CopyPb && strings.HasSuffix(path, "pb.go") {
+				isIncludePath := s.isMatchPath(protoRootDir, path, dep.Includes, compiledIncludes)
+				isIgnorePath := s.isMatchPath(protoRootDir, path, dep.Ignores, compiledIgnores)
+
+				if hasIncludes && !isIncludePath {
+					logger.Info("skipped %s due to include setting", path)
+				} else if isIgnorePath {
+					logger.Info("skipped %s due to ignore setting", path)
+				} else {
+					sources = append(sources, protoResource{
+						source:       path,
+						relativeDest: strings.Replace(path, protoRootDir, "", -1),
+					})
+				}
+			}
+
+			if dep.CopyClient && strings.HasSuffix(path, dep.ClientPath) {
+				isIncludePath := s.isMatchPath(protoRootDir, path, dep.Includes, compiledIncludes)
+				isIgnorePath := s.isMatchPath(protoRootDir, path, dep.Ignores, compiledIgnores)
+
+				if hasIncludes && !isIncludePath {
+					logger.Info("skipped %s due to include setting", path)
+				} else if isIgnorePath {
+					logger.Info("skipped %s due to ignore setting", path)
+				} else {
+					sources = append(sources, protoResource{
+						source:       path,
+						relativeDest: strings.Replace(path, protoRootDir, "", -1),
+					})
+				}
+			}
+
 			if strings.HasSuffix(path, ".proto") {
 				isIncludePath := s.isMatchPath(protoRootDir, path, dep.Includes, compiledIncludes)
 				isIgnorePath := s.isMatchPath(protoRootDir, path, dep.Ignores, compiledIgnores)
@@ -148,16 +191,38 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 			}
 		}
 
-		newdeps = append(newdeps, config.ProtoDepDependency{
-			Target:   repo.Dep.Target,
-			Branch:   repo.Dep.Branch,
-			Revision: repo.Hash,
-			Path:     repo.Dep.Path,
-			Includes: repo.Dep.Includes,
-			Ignores:  repo.Dep.Ignores,
-			Protocol: repo.Dep.Protocol,
-			Subgroup: repo.Dep.Subgroup,
-		})
+		if dep.UseLocal {
+			newdeps = append(newdeps, config.ProtoDepDependency{
+				Target:     dep.Target,
+				Branch:     dep.Branch,
+				Revision:   "",
+				Path:       dep.Path,
+				Includes:   dep.Includes,
+				Ignores:    dep.Ignores,
+				Protocol:   dep.Protocol,
+				Subgroup:   dep.Subgroup,
+				CopyPb:     dep.CopyPb,
+				CopyClient: dep.CopyClient,
+				ClientPath: dep.ClientPath,
+				UseLocal:   dep.UseLocal,
+			})
+		} else {
+			newdeps = append(newdeps, config.ProtoDepDependency{
+				Target:     repo.Dep.Target,
+				Branch:     repo.Dep.Branch,
+				Revision:   repo.Hash,
+				Path:       repo.Dep.Path,
+				Includes:   repo.Dep.Includes,
+				Ignores:    repo.Dep.Ignores,
+				Protocol:   repo.Dep.Protocol,
+				Subgroup:   repo.Dep.Subgroup,
+				CopyPb:     repo.Dep.CopyPb,
+				CopyClient: repo.Dep.CopyClient,
+				ClientPath: repo.Dep.ClientPath,
+				UseLocal:   repo.Dep.UseLocal,
+			})
+		}
+
 	}
 
 	newProtodep := config.ProtoDep{

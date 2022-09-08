@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -18,14 +19,18 @@ func (d *ProtoDep) Validate() error {
 }
 
 type ProtoDepDependency struct {
-	Target   string   `toml:"target"`
-	Subgroup string   `toml:"subgroup"`
-	Revision string   `toml:"revision"`
-	Branch   string   `toml:"branch"`
-	Path     string   `toml:"path"`
-	Ignores  []string `toml:"ignores"`
-	Includes []string `toml:"includes"`
-	Protocol string   `toml:"protocol"`
+	Target     string   `toml:"target"`
+	Subgroup   string   `toml:"subgroup"`
+	Revision   string   `toml:"revision"`
+	Branch     string   `toml:"branch"`
+	Path       string   `toml:"path"`
+	Ignores    []string `toml:"ignores"`
+	Includes   []string `toml:"includes"`
+	Protocol   string   `toml:"protocol"`
+	CopyPb     bool     `toml:"copyPb"`
+	CopyClient bool     `toml:"copyClient"`
+	ClientPath string   `toml:"clientPath"`
+	UseLocal   bool     `toml:"useLocal"`
 }
 
 func (d *ProtoDepDependency) Repository() string {
@@ -36,8 +41,10 @@ func (d *ProtoDepDependency) Repository() string {
 	}
 	repoTokens := 3 + len(subgroupTokens)
 	if len(tokens) > repoTokens {
+		fmt.Println("repo is:", strings.Join(tokens[0:repoTokens], "/"))
 		return strings.Join(tokens[0:repoTokens], "/")
 	} else {
+		fmt.Println("repo is:", d.Target)
 		return d.Target
 	}
 }

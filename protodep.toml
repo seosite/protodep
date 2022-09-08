@@ -2,15 +2,42 @@ proto_outdir = "./proto"
 
 # target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/order/tree/master/pkg/proto"
 [[dependencies]]
-  target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/base/protoc/pkg/proto"
-  subgroup = "backend/base"
+  target = "git@codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/user-center/pkg/proto"
+  subgroup = "backend"
   branch = "master"
-  protocol = "https"
-  path = "t2"
+  protocol = "ssh"
+  path = "user-center"
+  copyPb = false
+  copyClient = false
 
 [[dependencies]]
-  target = "codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/base/protoc/pkg/proto"
-  subgroup = "backend/base"
+  target = "git@codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/order"
+  subgroup = "backend"
   branch = "master"
-  protocol = "https"
-  path = "t1"
+  protocol = "ssh"
+  copyPb = false
+  copyClient = true
+  clientPath = "order.go"
+  includes = ["order/order.go"]
+  path = "order/client"
+
+
+[[dependencies]]
+  target = "git@codeup.aliyun.com/60f042fd342aa6e0763aba69/backend/order/pkg/proto"
+  subgroup = "backend"
+  branch = "master"
+  protocol = "ssh"
+  copyPb = true
+  copyClient = false
+  includes = ["order"]
+
+
+[[dependencies]]
+  target = "/Users/guoyi/go/src/aliyun/betacat/backend/order/pkg/proto"
+  subgroup = "backend"
+  branch = "master"
+  protocol = "ssh"
+  copyPb = true
+  copyClient = false
+  includes = ["order"]
+  useLocal = true

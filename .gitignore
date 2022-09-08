@@ -31,3 +31,5 @@ bin/
 protodep.lock
 artifacts/
 proto/
+
+.protodep
