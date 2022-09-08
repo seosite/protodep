@@ -75,9 +75,9 @@ func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 	}
 
 	outdir := filepath.Join(s.conf.OutputDir, protodep.ProtoOutdir)
-	if err := os.RemoveAll(outdir); err != nil {
-		return err
-	}
+	// if err := os.RemoveAll(outdir); err != nil {
+	// 	return err
+	// }
 
 	for _, dep := range protodep.Dependencies {
 		var (
