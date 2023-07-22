@@ -49,6 +49,10 @@ func New(conf *Config) (Resolver, error) {
 
 func (s *resolver) Resolve(forceUpdate bool, cleanupCache bool) error {
 
+	if s.conf.UseLocal {
+		return s.ResolveLocal(forceUpdate, cleanupCache)
+	}
+
 	dep := config.NewDependency(s.conf.TargetDir, forceUpdate)
 	protodep, err := dep.Load()
 	if err != nil {

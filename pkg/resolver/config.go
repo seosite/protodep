@@ -24,4 +24,7 @@ type Config struct {
 
 	// IdentityPassword is used if `ssh` mode is enable. Optional, only if identity file needs a passphrase.
 	IdentityPassword string
+
+	// UseLocal
+	UseLocal bool
 }

@@ -48,6 +48,12 @@ var upCmd = &cobra.Command{
 		}
 		logger.Info("use https = %t", useHttps)
 
+		useLocal, err := cmd.Flags().GetBool("use-local")
+		if err != nil {
+			return err
+		}
+		logger.Info("use local = %t", useLocal)
+
 		basicAuthUsername, err := cmd.Flags().GetString("basic-auth-username")
 		if err != nil {
 			return err
@@ -83,6 +89,7 @@ var upCmd = &cobra.Command{
 			BasicAuthPassword: basicAuthPassword,
 			IdentityFile:      identityFile,
 			IdentityPassword:  password,
+			UseLocal:          useLocal,
 		}
 
 		updateService, err := resolver.New(&conf)
@@ -100,6 +107,7 @@ func initDepCmd() {
 	upCmd.PersistentFlags().StringP("password", "p", "", "set the password for SSH")
 	upCmd.PersistentFlags().BoolP("cleanup", "c", false, "cleanup cache before exec.")
 	upCmd.PersistentFlags().BoolP("use-https", "u", false, "use HTTPS to get dependencies.")
+	upCmd.PersistentFlags().BoolP("use-local", "l", false, "use local to get dependencies.")
 	upCmd.PersistentFlags().StringP("basic-auth-username", "", "", "set the username with Basic Auth via HTTPS")
 	upCmd.PersistentFlags().StringP("basic-auth-password", "", "", "set the password or personal access token(when enabled 2FA) with Basic Auth via HTTPS")
 }
