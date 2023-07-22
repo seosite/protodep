@@ -37,9 +37,10 @@ func (s *resolver) ResolveLocal(forceUpdate bool, cleanupCache bool) error {
 	}
 
 	outdir := filepath.Join(s.conf.OutputDir, protodep.ProtoOutdir)
-	if err := os.RemoveAll(outdir); err != nil {
-		return err
-	}
+	// 不删除文件
+	// if err := os.RemoveAll(outdir); err != nil {
+	// 	return err
+	// }
 
 	for _, dep := range protodep.Dependencies {
 		sources := make([]protoResource, 0)
