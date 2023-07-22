@@ -87,7 +87,14 @@ func (s *resolver) ResolveLocal(forceUpdate bool, cleanupCache bool) error {
 		}
 
 		newdeps = append(newdeps, config.ProtoDepDependency{
-			Target: dep.Target,
+			Target:   dep.Target,
+			Subgroup: dep.Subgroup,
+			Revision: dep.Revision,
+			Branch:   dep.Branch,
+			Path:     dep.Path,
+			Ignores:  dep.Ignores,
+			Includes: dep.Ignores,
+			Protocol: dep.Protocol,
 		})
 	}
 
