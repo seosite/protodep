@@ -8,9 +8,9 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 
-	"github.com/stormcat24/protodep/pkg/auth"
-	"github.com/stormcat24/protodep/pkg/config"
-	"github.com/stormcat24/protodep/pkg/logger"
+	"github.com/seosite/protodep/pkg/auth"
+	"github.com/seosite/protodep/pkg/config"
+	"github.com/seosite/protodep/pkg/logger"
 )
 
 type Git interface {
@@ -132,7 +132,7 @@ func (r *github) Open() (*OpenedRepository, error) {
 		}
 
 		if err := wt.Checkout(&opts); err != nil {
-			return nil, fmt.Errorf( "checkout to %s: %w", revision, err)
+			return nil, fmt.Errorf("checkout to %s: %w", revision, err)
 		}
 	}
 

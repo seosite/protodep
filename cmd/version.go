@@ -2,9 +2,10 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 
-	"github.com/stormcat24/protodep/version"
+	"github.com/seosite/protodep/version"
 )
 
 const art = `

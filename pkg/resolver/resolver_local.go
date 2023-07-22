@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/stormcat24/protodep/pkg/config"
-	"github.com/stormcat24/protodep/pkg/logger"
+	"github.com/seosite/protodep/pkg/config"
+	"github.com/seosite/protodep/pkg/logger"
 )
 
 func (s *resolver) ResolveLocal(forceUpdate bool, cleanupCache bool) error {

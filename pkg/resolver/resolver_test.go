@@ -11,8 +11,8 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/stretchr/testify/require"
 
-	"github.com/stormcat24/protodep/pkg/auth"
-	"github.com/stormcat24/protodep/pkg/config"
+	"github.com/seosite/protodep/pkg/auth"
+	"github.com/seosite/protodep/pkg/config"
 )
 
 func TestSync(t *testing.T) {
@@ -97,7 +97,6 @@ func TestSync(t *testing.T) {
 	if !isFileExist(filepath.Join(outputRootDir, "proto/protodep/hierarchy/fuga/fuga.proto")) {
 		t.Error("not found file [proto/protodep/hierarchy/fuga/fuga.proto]")
 	}
-
 
 	// fetch
 	err = target.Resolve(false, false)
